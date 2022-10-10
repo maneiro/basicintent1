@@ -1,0 +1,12 @@
+com.zebra.basicintent1.app-support-compat-28.0.0-0 C:\Users\amane\.gradle\caches\transforms-3\00ae0264ea64350c0d34b5626db64f0b\transformed\support-compat-28.0.0\res
+com.zebra.basicintent1.app-coordinatorlayout-28.0.0-1 C:\Users\amane\.gradle\caches\transforms-3\0b9fc8d9f154c86a7fc179511600af22\transformed\coordinatorlayout-28.0.0\res
+com.zebra.basicintent1.app-constraint-layout-1.1.3-2 C:\Users\amane\.gradle\caches\transforms-3\e64cbef90b41f698af4d86816b9946b8\transformed\constraint-layout-1.1.3\res
+com.zebra.basicintent1.app-appcompat-v7-28.0.0-3 C:\Users\amane\.gradle\caches\transforms-3\f3fb8e121effd5569417956c58bf8b53\transformed\appcompat-v7-28.0.0\res
+com.zebra.basicintent1.app-pngs-4 C:\datawedge\BasicIntent1\app\build\generated\res\pngs\debug
+com.zebra.basicintent1.app-resValues-5 C:\datawedge\BasicIntent1\app\build\generated\res\resValues\debug
+com.zebra.basicintent1.app-rs-6 C:\datawedge\BasicIntent1\app\build\generated\res\rs\debug
+com.zebra.basicintent1.app-mergeDebugResources-7 C:\datawedge\BasicIntent1\app\build\intermediates\incremental\debug\mergeDebugResources\merged.dir
+com.zebra.basicintent1.app-mergeDebugResources-8 C:\datawedge\BasicIntent1\app\build\intermediates\incremental\debug\mergeDebugResources\stripped.dir
+com.zebra.basicintent1.app-merged_res-9 C:\datawedge\BasicIntent1\app\build\intermediates\merged_res\debug
+com.zebra.basicintent1.app-debug-10 C:\datawedge\BasicIntent1\app\src\debug\res
+com.zebra.basicintent1.app-main-11 C:\datawedge\BasicIntent1\app\src\main\res
