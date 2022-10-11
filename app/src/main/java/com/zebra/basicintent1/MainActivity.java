@@ -14,6 +14,7 @@ import android.content.IntentFilter;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class  MainActivity extends AppCompatActivity {
 
@@ -71,6 +72,7 @@ public class  MainActivity extends AppCompatActivity {
                 //  Received a barcode scan
                 try {
                     displayScanResult(intent, "via Broadcast");
+
                 } catch (Exception e) {
                     //  Catch if the UI does not exist when we receive the broadcast
                 }
@@ -84,15 +86,16 @@ public class  MainActivity extends AppCompatActivity {
     //
     private void displayScanResult(Intent initiatingIntent, String howDataReceived)
     {
-        String decodedSource = initiatingIntent.getStringExtra(getResources().getString(R.string.datawedge_intent_key_source));
-        String decodedData = initiatingIntent.getStringExtra(getResources().getString(R.string.datawedge_intent_key_data));
-        String decodedLabelType = initiatingIntent.getStringExtra(getResources().getString(R.string.datawedge_intent_key_label_type));
+        String decodedSource = initiatingIntent.getStringExtra(getResources().getString(R.string.datawedge_intent_key_source_legacy));
+        String decodedData = initiatingIntent.getStringExtra(getResources().getString(R.string.datawedge_intent_key_data_legacy));
+        String decodedLabelType = initiatingIntent.getStringExtra(getResources().getString(R.string.datawedge_intent_key_label_type_legacy));
 
         final TextView lblScanSource = (TextView) findViewById(R.id.lblScanSource);
         final TextView lblScanData = (TextView) findViewById(R.id.lblScanData);
         final TextView lblScanLabelType = (TextView) findViewById(R.id.lblScanDecoder);
 
         lblScanSource.setText(decodedSource + " " + howDataReceived);
+        Toast.makeText(getApplicationContext(),"Hello " +decodedData,Toast.LENGTH_SHORT).show();
         lblScanData.setText(decodedData);
         lblScanLabelType.setText(decodedLabelType);
     }

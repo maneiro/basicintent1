@@ -884,10 +884,13 @@ int string abc_toolbar_collapse_description 0x7f0b0026
 int string activity_intent_filter_action 0x7f0b0027
 int string app_name 0x7f0b0028
 int string datawedge_intent_key_data 0x7f0b0029
-int string datawedge_intent_key_label_type 0x7f0b002a
-int string datawedge_intent_key_source 0x7f0b002b
-int string search_menu_title 0x7f0b002c
-int string status_bar_notification_info_overflow 0x7f0b002d
+int string datawedge_intent_key_data_legacy 0x7f0b002a
+int string datawedge_intent_key_label_type 0x7f0b002b
+int string datawedge_intent_key_label_type_legacy 0x7f0b002c
+int string datawedge_intent_key_source 0x7f0b002d
+int string datawedge_intent_key_source_legacy 0x7f0b002e
+int string search_menu_title 0x7f0b002f
+int string status_bar_notification_info_overflow 0x7f0b0030
 int style AlertDialog_AppCompat 0x7f0c0000
 int style AlertDialog_AppCompat_Light 0x7f0c0001
 int style Animation_AppCompat_Dialog 0x7f0c0002

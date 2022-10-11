@@ -885,8 +885,11 @@ string abc_toolbar_collapse_description
 string activity_intent_filter_action
 string app_name
 string datawedge_intent_key_data
+string datawedge_intent_key_data_legacy
 string datawedge_intent_key_label_type
+string datawedge_intent_key_label_type_legacy
 string datawedge_intent_key_source
+string datawedge_intent_key_source_legacy
 string search_menu_title
 string status_bar_notification_info_overflow
 style AlertDialog_AppCompat
