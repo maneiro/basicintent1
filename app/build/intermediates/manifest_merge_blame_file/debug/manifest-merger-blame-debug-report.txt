@@ -10,38 +10,42 @@
 9        android:targetSdkVersion="30" />
 9-->C:\datawedge\BasicIntent1\app\src\main\AndroidManifest.xml
 10
-11    <application
-11-->C:\datawedge\BasicIntent1\app\src\main\AndroidManifest.xml:5:5-19:19
-12        android:allowBackup="true"
-12-->C:\datawedge\BasicIntent1\app\src\main\AndroidManifest.xml:6:9-35
-13        android:appComponentFactory="android.support.v4.app.CoreComponentFactory"
-13-->[com.android.support:support-compat:28.0.0] C:\Users\amane\.gradle\caches\transforms-3\00ae0264ea64350c0d34b5626db64f0b\transformed\support-compat-28.0.0\AndroidManifest.xml:22:18-91
-14        android:debuggable="true"
-15        android:icon="@mipmap/ic_launcher"
-15-->C:\datawedge\BasicIntent1\app\src\main\AndroidManifest.xml:7:9-43
-16        android:label="@string/app_name"
-16-->C:\datawedge\BasicIntent1\app\src\main\AndroidManifest.xml:8:9-41
-17        android:roundIcon="@mipmap/ic_launcher_round"
-17-->C:\datawedge\BasicIntent1\app\src\main\AndroidManifest.xml:9:9-54
-18        android:supportsRtl="true"
-18-->C:\datawedge\BasicIntent1\app\src\main\AndroidManifest.xml:10:9-35
-19        android:testOnly="true"
-20        android:theme="@style/AppTheme" >
-20-->C:\datawedge\BasicIntent1\app\src\main\AndroidManifest.xml:11:9-40
-21        <activity android:name="com.zebra.basicintent1.MainActivity" >
-21-->C:\datawedge\BasicIntent1\app\src\main\AndroidManifest.xml:12:9-18:20
-21-->C:\datawedge\BasicIntent1\app\src\main\AndroidManifest.xml:12:19-47
-22            <intent-filter>
-22-->C:\datawedge\BasicIntent1\app\src\main\AndroidManifest.xml:13:13-17:29
-23                <action android:name="android.intent.action.MAIN" />
-23-->C:\datawedge\BasicIntent1\app\src\main\AndroidManifest.xml:14:17-69
-23-->C:\datawedge\BasicIntent1\app\src\main\AndroidManifest.xml:14:25-66
-24
-25                <category android:name="android.intent.category.LAUNCHER" />
-25-->C:\datawedge\BasicIntent1\app\src\main\AndroidManifest.xml:16:17-77
-25-->C:\datawedge\BasicIntent1\app\src\main\AndroidManifest.xml:16:27-74
-26            </intent-filter>
-27        </activity>
-28    </application>
-29
-30</manifest>
+11    <uses-permission android:name="android.permission.INTERNET" />
+11-->C:\datawedge\BasicIntent1\app\src\main\AndroidManifest.xml:4:5-67
+11-->C:\datawedge\BasicIntent1\app\src\main\AndroidManifest.xml:4:22-64
+12
+13    <application
+13-->C:\datawedge\BasicIntent1\app\src\main\AndroidManifest.xml:5:5-19:19
+14        android:allowBackup="true"
+14-->C:\datawedge\BasicIntent1\app\src\main\AndroidManifest.xml:6:9-35
+15        android:appComponentFactory="android.support.v4.app.CoreComponentFactory"
+15-->[com.android.support:support-compat:28.0.0] C:\Users\amane\.gradle\caches\transforms-3\00ae0264ea64350c0d34b5626db64f0b\transformed\support-compat-28.0.0\AndroidManifest.xml:22:18-91
+16        android:debuggable="true"
+17        android:icon="@mipmap/ic_launcher"
+17-->C:\datawedge\BasicIntent1\app\src\main\AndroidManifest.xml:7:9-43
+18        android:label="@string/app_name"
+18-->C:\datawedge\BasicIntent1\app\src\main\AndroidManifest.xml:8:9-41
+19        android:roundIcon="@mipmap/ic_launcher_round"
+19-->C:\datawedge\BasicIntent1\app\src\main\AndroidManifest.xml:9:9-54
+20        android:supportsRtl="true"
+20-->C:\datawedge\BasicIntent1\app\src\main\AndroidManifest.xml:10:9-35
+21        android:testOnly="true"
+22        android:theme="@style/AppTheme" >
+22-->C:\datawedge\BasicIntent1\app\src\main\AndroidManifest.xml:11:9-40
+23        <activity android:name="com.zebra.basicintent1.MainActivity" >
+23-->C:\datawedge\BasicIntent1\app\src\main\AndroidManifest.xml:12:9-18:20
+23-->C:\datawedge\BasicIntent1\app\src\main\AndroidManifest.xml:12:19-47
+24            <intent-filter>
+24-->C:\datawedge\BasicIntent1\app\src\main\AndroidManifest.xml:13:13-17:29
+25                <action android:name="android.intent.action.MAIN" />
+25-->C:\datawedge\BasicIntent1\app\src\main\AndroidManifest.xml:14:17-69
+25-->C:\datawedge\BasicIntent1\app\src\main\AndroidManifest.xml:14:25-66
+26
+27                <category android:name="android.intent.category.LAUNCHER" />
+27-->C:\datawedge\BasicIntent1\app\src\main\AndroidManifest.xml:16:17-77
+27-->C:\datawedge\BasicIntent1\app\src\main\AndroidManifest.xml:16:27-74
+28            </intent-filter>
+29        </activity>
+30    </application>
+31
+32</manifest>

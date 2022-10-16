@@ -16,12 +16,16 @@ import android.os.Bundle;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.BufferedInputStream;
+
+import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 public class  MainActivity extends AppCompatActivity {
 
@@ -40,6 +44,7 @@ public class  MainActivity extends AppCompatActivity {
     //
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -47,6 +52,8 @@ public class  MainActivity extends AppCompatActivity {
         filter.addCategory(Intent.CATEGORY_DEFAULT);
         filter.addAction(getResources().getString(R.string.activity_intent_filter_action));
         registerReceiver(myBroadcastReceiver, filter);
+    
+
     }
 
     @Override
@@ -116,21 +123,34 @@ public class  MainActivity extends AppCompatActivity {
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
-        HttpURLConnection urlConnection = null;
+        HttpURLConnection conn = null;
         try {
-            urlConnection = (HttpURLConnection) url.openConnection();
-            urlConnection.setRequestMethod("POST");
-            urlConnection.setDoOutput(true);
+            conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setDoInput(true);
+            conn.setDoOutput(true);
         } catch (IOException e) {
             e.printStackTrace();
         }
         try {
-            InputStream in = new BufferedInputStream(urlConnection.getInputStream());
-            Toast.makeText(getApplicationContext(),"testing "+in,Toast.LENGTH_SHORT).show();
+            List params = new ArrayList();
+            params.add(1, "paramValue1");
+            params.add(2, "paramValue2");
+            OutputStream os = conn.getOutputStream();
+            Toast.makeText(getApplicationContext(),"testing ",Toast.LENGTH_SHORT).show();
+            BufferedWriter writer = new BufferedWriter(
+                    new OutputStreamWriter(os, "UTF-8"));
+            writer.write(String.valueOf(params));
+            writer.flush();
+            writer.close();
+            os.close();
+
+            //InputStream in = new BufferedInputStream(conn.getInputStream());
+
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            urlConnection.disconnect();
+            conn.disconnect();
         }
 
         /*conn.setRequestMethod("POST");
