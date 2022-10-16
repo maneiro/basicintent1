@@ -16,6 +16,13 @@ import android.os.Bundle;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+
 public class  MainActivity extends AppCompatActivity {
 
     //
@@ -99,4 +106,73 @@ public class  MainActivity extends AppCompatActivity {
         lblScanData.setText(decodedData);
         lblScanLabelType.setText(decodedLabelType);
     }
+
+
+    public void postData() {
+
+        URL url = null;
+        try {
+            url = new URL("http://localhost:3000/allocate");
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        HttpURLConnection urlConnection = null;
+        try {
+            urlConnection = (HttpURLConnection) url.openConnection();
+            urlConnection.setRequestMethod("POST");
+            urlConnection.setDoOutput(true);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            InputStream in = new BufferedInputStream(urlConnection.getInputStream());
+            Toast.makeText(getApplicationContext(),"testing "+in,Toast.LENGTH_SHORT).show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            urlConnection.disconnect();
+        }
+
+        /*conn.setRequestMethod("POST");
+        conn.setDoInput(true);
+        conn.setDoOutput(true);
+
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("firstParam", paramValue1));
+        params.add(new BasicNameValuePair("secondParam", paramValue2));
+        params.add(new BasicNameValuePair("thirdParam", paramValue3));
+
+        OutputStream os = conn.getOutputStream();
+        BufferedWriter writer = new BufferedWriter(
+                new OutputStreamWriter(os, "UTF-8"));
+        writer.write(getQuery(params));
+        writer.flush();
+        writer.close();
+        os.close();
+
+        conn.connect();*/
+
+
+        /* Create a new HttpClient and Post Header
+        HttpClient httpclient = new DefaultHttpClient();
+        HttpPost httppost = new HttpPost("http://www.yoursite.com/script.php");
+
+        try {
+            // Add your data
+            List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
+            nameValuePairs.add(new BasicNameValuePair("id", "12345"));
+            nameValuePairs.add(new BasicNameValuePair("stringdata", "Hi"));
+            httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+
+            // Execute HTTP Post Request
+            HttpResponse response = httpclient.execute(httppost);
+
+        } catch (ClientProtocolException e) {
+            // TODO Auto-generated catch block
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+        }*/
+    }
+
+
 }
