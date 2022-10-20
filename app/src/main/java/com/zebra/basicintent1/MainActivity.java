@@ -13,35 +13,35 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
 
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class  MainActivity extends AppCompatActivity {
 
-    //
-    // The section snippet below registers to receive the data broadcast from the
-    // DataWedge intent output. In the example, a dynamic broadcast receiver is
-    // registered in the onCreate() call of the target app. Notice that the filtered action
-    // matches the "Intent action" specified in the DataWedge Intent Output configuration.
-    //
-    // For a production app, a more efficient way to the register and unregister the receiver
-    // might be to use the onResume() and onPause() calls.
+    // Hash Map to associate location with items
+    HashMap<String, List<String>> locationMap = new HashMap<>();
+    // Array of strings
+    List<String> items = new ArrayList<String>();
+    // Location String
+    String location = "";
 
-    // Note: If DataWedge had been configured to start an activity (instead of a broadcast),
-    // the intent could be handled in the app's manifest by calling getIntent() in onCreate().
-    // If configured as startService, then a service must be created to receive the intent.
-    //
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -52,8 +52,6 @@ public class  MainActivity extends AppCompatActivity {
         filter.addCategory(Intent.CATEGORY_DEFAULT);
         filter.addAction(getResources().getString(R.string.activity_intent_filter_action));
         registerReceiver(myBroadcastReceiver, filter);
-    
-
     }
 
     @Override
@@ -100,99 +98,72 @@ public class  MainActivity extends AppCompatActivity {
     //
     private void displayScanResult(Intent initiatingIntent, String howDataReceived)
     {
-        String decodedSource = initiatingIntent.getStringExtra(getResources().getString(R.string.datawedge_intent_key_source_legacy));
         String decodedData = initiatingIntent.getStringExtra(getResources().getString(R.string.datawedge_intent_key_data_legacy));
-        String decodedLabelType = initiatingIntent.getStringExtra(getResources().getString(R.string.datawedge_intent_key_label_type_legacy));
+        items.add(decodedData);
 
-        final TextView lblScanSource = (TextView) findViewById(R.id.lblScanSource);
-        final TextView lblScanData = (TextView) findViewById(R.id.lblScanData);
-        final TextView lblScanLabelType = (TextView) findViewById(R.id.lblScanDecoder);
+        // Temp way to display text
+        String display_txt = "";
 
-        lblScanSource.setText(decodedSource + " " + howDataReceived);
-        Toast.makeText(getApplicationContext(),"Hello " +decodedData,Toast.LENGTH_SHORT).show();
-        lblScanData.setText(decodedData);
-        lblScanLabelType.setText(decodedLabelType);
+        for (String txt : items) {
+            display_txt = display_txt + " | " + txt;
+        }
+
+        final TextView display_view = (TextView) findViewById(R.id.display_txt);
+        display_view.setText(display_txt);
     }
 
 
     public void postData() {
-
+        // Create URL Object
         URL url = null;
         try {
             url = new URL("http://localhost:3000/allocate");
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
+        // Open Connection and set method/headers
         HttpURLConnection conn = null;
         try {
             conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("POST");
-            conn.setDoInput(true);
+            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setRequestProperty("Accept", "application/json");
             conn.setDoOutput(true);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        try {
-            List params = new ArrayList();
-            params.add(1, "paramValue1");
-            params.add(2, "paramValue2");
-            OutputStream os = conn.getOutputStream();
-            Toast.makeText(getApplicationContext(),"testing ",Toast.LENGTH_SHORT).show();
-            BufferedWriter writer = new BufferedWriter(
-                    new OutputStreamWriter(os, "UTF-8"));
-            writer.write(String.valueOf(params));
-            writer.flush();
-            writer.close();
-            os.close();
+        // Send Request
+        try ( OutputStream os = conn.getOutputStream()) {
+            // Convert hash map to JSON
+            JSONObject json = new JSONObject(locationMap);
+            // Convert JSON to JSON String
+            String input = json.toString();
 
-            //InputStream in = new BufferedInputStream(conn.getInputStream());
+            // Send final JSON input
+            os.write(input, 0, input.length);
 
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
             conn.disconnect();
         }
-
-        /*conn.setRequestMethod("POST");
-        conn.setDoInput(true);
-        conn.setDoOutput(true);
-
-        List<NameValuePair> params = new ArrayList<NameValuePair>();
-        params.add(new BasicNameValuePair("firstParam", paramValue1));
-        params.add(new BasicNameValuePair("secondParam", paramValue2));
-        params.add(new BasicNameValuePair("thirdParam", paramValue3));
-
-        OutputStream os = conn.getOutputStream();
-        BufferedWriter writer = new BufferedWriter(
-                new OutputStreamWriter(os, "UTF-8"));
-        writer.write(getQuery(params));
-        writer.flush();
-        writer.close();
-        os.close();
-
-        conn.connect();*/
-
-
-        /* Create a new HttpClient and Post Header
-        HttpClient httpclient = new DefaultHttpClient();
-        HttpPost httppost = new HttpPost("http://www.yoursite.com/script.php");
-
-        try {
-            // Add your data
-            List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
-            nameValuePairs.add(new BasicNameValuePair("id", "12345"));
-            nameValuePairs.add(new BasicNameValuePair("stringdata", "Hi"));
-            httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-
-            // Execute HTTP Post Request
-            HttpResponse response = httpclient.execute(httppost);
-
-        } catch (ClientProtocolException e) {
-            // TODO Auto-generated catch block
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-        }*/
     }
 
+    public void completeGroup(View view) {
+        locationMap.put(location, items);
+        postData();
+        locationMap.clear();
+
+        resetGroupItems(view);
+    }
+
+    public void resetGroupItems(View view) {
+        // Clear data and textview
+        items.clear();
+        final TextView location_txt = (TextView) findViewById(R.id.location_txt);
+        location_txt.setText("Scan to Set Location...");
+        final TextView display_view = (TextView) findViewById(R.id.display_txt);
+        display_view.setText("");
+    }
 
 }
