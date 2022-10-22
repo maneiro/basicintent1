@@ -29,6 +29,7 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -99,17 +100,28 @@ public class  MainActivity extends AppCompatActivity {
     private void displayScanResult(Intent initiatingIntent, String howDataReceived)
     {
         String decodedData = initiatingIntent.getStringExtra(getResources().getString(R.string.datawedge_intent_key_data_legacy));
-        items.add(decodedData);
 
-        // Temp way to display text
-        String display_txt = "";
+        // Set Location first
+        if (location == ""){
+            location = decodedData;
+            final TextView location_txt = (TextView) findViewById(R.id.location_txt);
 
-        for (String txt : items) {
-            display_txt = display_txt + " | " + txt;
+            location_txt.setText(location);
+
         }
+        // Then append to items
+        else {
+            items.add(decodedData);
+            // Temp way to display text
+            String display_txt = "";
 
-        final TextView display_view = (TextView) findViewById(R.id.display_txt);
-        display_view.setText(display_txt);
+            for (String txt : items) {
+                display_txt = display_txt + " | " + txt;
+            }
+
+            final TextView display_view = (TextView) findViewById(R.id.display_txt);
+            display_view.setText(display_txt);
+        }
     }
 
 
@@ -136,9 +148,8 @@ public class  MainActivity extends AppCompatActivity {
         try ( OutputStream os = conn.getOutputStream()) {
             // Convert hash map to JSON
             JSONObject json = new JSONObject(locationMap);
-            // Convert JSON to JSON String
-            String input = json.toString();
-
+            // Convert JSON to byte
+            byte[] input = json.toString().getBytes("utf-8");
             // Send final JSON input
             os.write(input, 0, input.length);
 
@@ -160,6 +171,7 @@ public class  MainActivity extends AppCompatActivity {
     public void resetGroupItems(View view) {
         // Clear data and textview
         items.clear();
+        location = "";
         final TextView location_txt = (TextView) findViewById(R.id.location_txt);
         location_txt.setText("Scan to Set Location...");
         final TextView display_view = (TextView) findViewById(R.id.display_txt);
