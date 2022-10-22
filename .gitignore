@@ -83,3 +83,9 @@ lint/generated/
 lint/outputs/
 lint/tmp/
 # lint/reports/
+
+# Misc
+app/build/intermediates
+app/build/outputs
+app/build/tmp
+local.properties
