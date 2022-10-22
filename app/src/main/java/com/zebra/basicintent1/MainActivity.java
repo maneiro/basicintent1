@@ -13,6 +13,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -53,6 +54,25 @@ public class  MainActivity extends AppCompatActivity {
         filter.addCategory(Intent.CATEGORY_DEFAULT);
         filter.addAction(getResources().getString(R.string.activity_intent_filter_action));
         registerReceiver(myBroadcastReceiver, filter);
+
+        // FOR DEBUGGING
+        location = "123";
+        items.add("321");
+        items.add("456");
+        items.add("678");
+
+        final TextView location_txt = (TextView) findViewById(R.id.location_txt);
+        location_txt.setText(location);
+
+        String display_txt = "";
+
+        for (String txt : items) {
+            display_txt = display_txt + " | " + txt;
+        }
+
+        final TextView display_view = (TextView) findViewById(R.id.display_txt);
+        display_view.setText(display_txt);
+        // FOR DEBUGGING
     }
 
     @Override
@@ -62,13 +82,6 @@ public class  MainActivity extends AppCompatActivity {
         unregisterReceiver(myBroadcastReceiver);
     }
 
-    //
-    // After registering the broadcast receiver, the next step (below) is to define it.
-    // Here it's done in the MainActivity.java, but also can be handled by a separate class.
-    // The logic of extracting the scanned data and displaying it on the screen
-    // is executed in its own method (later in the code). Note the use of the
-    // extra keys defined in the strings.xml file.
-    //
     private BroadcastReceiver myBroadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -126,46 +139,53 @@ public class  MainActivity extends AppCompatActivity {
 
 
     public void postData() {
-        // Create URL Object
-        URL url = null;
-        try {
-            url = new URL("http://localhost:3000/allocate");
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-        // Open Connection and set method/headers
-        HttpURLConnection conn = null;
-        try {
-            conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("POST");
-            conn.setRequestProperty("Content-Type", "application/json");
-            conn.setRequestProperty("Accept", "application/json");
-            conn.setDoOutput(true);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        // Send Request
-        try ( OutputStream os = conn.getOutputStream()) {
-            // Convert hash map to JSON
-            JSONObject json = new JSONObject(locationMap);
-            // Convert JSON to byte
-            byte[] input = json.toString().getBytes("utf-8");
-            // Send final JSON input
-            os.write(input, 0, input.length);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                // Create URL Object
+                URL url = null;
+                try {
+                    url = new URL("http://localhost:3000/allocate");
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
+                // Open Connection and set method/headers
+                HttpURLConnection conn = null;
+                try {
+                    conn = (HttpURLConnection) url.openConnection();
+                    conn.setRequestMethod("POST");
+                    conn.setRequestProperty("Content-Type", "application/json");
+                    conn.setRequestProperty("Accept", "application/json");
+                    conn.setDoOutput(true);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                // Send Request
+                try ( OutputStream os = conn.getOutputStream()) {
+                    // Convert hash map to JSON
+                    JSONObject json = new JSONObject(locationMap);
+                    // Convert JSON to byte
+                    byte[] input = json.toString().getBytes("utf-8");
+                    // Send final JSON input
+                    os.write(input, 0, input.length);
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            conn.disconnect();
-        }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    conn.disconnect();
+                }
+            }
+        }).start();
     }
 
     public void completeGroup(View view) {
-        locationMap.put(location, items);
-        postData();
-        locationMap.clear();
-
-        resetGroupItems(view);
+        if(location != "" && items.size() > 1){
+            locationMap.put(location, items);
+            // Log.i("PUSHED MAP - ", new JSONObject(locationMap).toString());
+            postData();
+            locationMap.clear();
+            resetGroupItems(view);
+        }
     }
 
     public void resetGroupItems(View view) {
