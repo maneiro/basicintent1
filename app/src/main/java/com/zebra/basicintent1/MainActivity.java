@@ -19,14 +19,20 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -37,8 +43,6 @@ import java.util.List;
 
 public class  MainActivity extends AppCompatActivity {
 
-    // Hash Map to associate location with items
-    HashMap<String, List<String>> locationMap = new HashMap<>();
     // Array of strings
     List<String> items = new ArrayList<String>();
     // Location String
@@ -55,24 +59,25 @@ public class  MainActivity extends AppCompatActivity {
         filter.addAction(getResources().getString(R.string.activity_intent_filter_action));
         registerReceiver(myBroadcastReceiver, filter);
 
-        // FOR DEBUGGING
-        location = "123";
-        items.add("321");
-        items.add("456");
-        items.add("678");
-
-        final TextView location_txt = (TextView) findViewById(R.id.location_txt);
-        location_txt.setText(location);
-
-        String display_txt = "";
-
-        for (String txt : items) {
-            display_txt = display_txt + " | " + txt;
-        }
-
-        final TextView display_view = (TextView) findViewById(R.id.display_txt);
-        display_view.setText(display_txt);
-        // FOR DEBUGGING
+        // FOR DEBUGGING without the scanner
+//        location = "dfdfgdf";
+//        items.add("sdfsdg");
+//        items.add("sdgsdfg");
+//        items.add("dsfsdf");
+//        items.add("dsfsdf");
+//
+//        final TextView location_txt = (TextView) findViewById(R.id.location_txt);
+//        location_txt.setText(location);
+//
+//        String display_txt = "";
+//
+//        for (String txt : items) {
+//            display_txt = display_txt + " | " + txt;
+//        }
+//
+//        final TextView display_view = (TextView) findViewById(R.id.display_txt);
+//        display_view.setText(display_txt);
+        // FOR DEBUGGING without the scanner
     }
 
     @Override
@@ -139,51 +144,60 @@ public class  MainActivity extends AppCompatActivity {
 
 
     public void postData() {
-        new Thread(new Runnable() {
+        Thread sendPOSTRequest = new Thread(new Runnable() {
             @Override
             public void run() {
                 // Create URL Object
-                URL url = null;
                 try {
-                    url = new URL("http://localhost:3000/allocate");
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
-                }
-                // Open Connection and set method/headers
-                HttpURLConnection conn = null;
-                try {
-                    conn = (HttpURLConnection) url.openConnection();
-                    conn.setRequestMethod("POST");
-                    conn.setRequestProperty("Content-Type", "application/json");
-                    conn.setRequestProperty("Accept", "application/json");
-                    conn.setDoOutput(true);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                // Send Request
-                try ( OutputStream os = conn.getOutputStream()) {
-                    // Convert hash map to JSON
-                    JSONObject json = new JSONObject(locationMap);
-                    // Convert JSON to byte
-                    byte[] input = json.toString().getBytes("utf-8");
-                    // Send final JSON input
-                    os.write(input, 0, input.length);
+                    URL url = new URL("https://us-central1-tnode-1a0be.cloudfunctions.net/app/allocate");
+                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                    try{
+                        // Open Connection and set method/headers
+                        conn.setRequestMethod("POST");
+                        conn.setRequestProperty("Content-Type", "application/json");
+                        conn.setRequestProperty("Accept", "application/json");
+                        conn.setDoOutput(true);
+                        conn.setDoInput(true);
+                        conn.setUseCaches(false);
 
-                } catch (IOException e) {
+                        // Convert values to JSON
+                        JSONObject json = new JSONObject();
+                        json.put("location", location);
+                        json.put("items", new JSONArray(items));
+                        Log.i("DEBUG: ", "JSON STR: " + json.toString());
+
+                        conn.setRequestProperty("Content-length", json.toString().getBytes().length + "");
+
+                        OutputStream os = conn.getOutputStream();
+                        // Send final JSON input
+                        os.write(json.toString().getBytes("UTF-8"));
+                        os.close();
+                        conn.connect();
+
+                        // Response Code
+                        Log.i("DEBUG", "RESPONSE CODE: " + conn.getResponseCode());
+                    } finally {
+                        conn.disconnect();
+                    }
+                } catch (IOException | JSONException e) {
                     e.printStackTrace();
-                } finally {
-                    conn.disconnect();
                 }
+
             }
-        }).start();
+        });
+        // Make thread stop main thread so data isn't cleared before its sent
+        sendPOSTRequest.start();
+        try {
+            sendPOSTRequest.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
     }
 
     public void completeGroup(View view) {
         if(location != "" && items.size() > 1){
-            locationMap.put(location, items);
-            // Log.i("PUSHED MAP - ", new JSONObject(locationMap).toString());
             postData();
-            locationMap.clear();
             resetGroupItems(view);
         }
     }
